@@ -23,7 +23,7 @@ jobs:
 
       # Step 3a: For Maven
       - name: Build and Generate OpenAPI Spec (Maven)
-        run: ./mvnw clean verify -Dmaven.test.skip=true -Dspring-boot.run.profiles=test
+        run: ./mvnw clean verify -Dmaven.test.skip=true
         # 'verify' triggers the springdoc plugin execution configured in Phase 1
 
       # Step 3b: For Gradle (Uncomment if using Gradle)
