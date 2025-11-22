@@ -3,13 +3,13 @@ name: Update API Docs
 on:
   push:
     branches:
-      - master # Run only on master branch updates
+      - master
 
 jobs:
   build-and-sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permission to commit back to the repo
+      contents: write
 
     steps:
       - name: Checkout code
@@ -18,17 +18,27 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # Use your project's Java version
+          java-version: '21'
           distribution: 'temurin'
 
-      # Step 3a: For Maven
-      - name: Build and Generate OpenAPI Spec (Maven)
-        run: ./mvnw clean verify -DskipTests
-        # 'verify' triggers the springdoc plugin execution configured in Phase 1
+      - name: Build application
+        run: ./mvnw clean package -DskipTests
 
-      # Step 3b: For Gradle (Uncomment if using Gradle)
-      # - name: Build and Generate OpenAPI Spec (Gradle)
-      #   run: ./gradlew clean generateOpenApiDocs
+      - name: Start Spring Boot application
+        run: |
+          java -jar target/*.jar &
+          echo $! > app.pid
+          sleep 30  # Wait for app to start
+
+      - name: Generate OpenAPI spec
+        run: ./mvnw springdoc-openapi:generate
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+          fi
 
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
