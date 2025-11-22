@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: SpringDemoTest
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: ${REDIS_USERNAME:default}
+      password: ${REDIS_PASSWORD}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      password: ""
+#      timeout: 60s
+#      lettuce:
+#        pool:
+#          max-active: 8
+#          max-idle: 8
+#          min-idle: 0
+#          max-wait: 30s
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  packages-to-exclude: com.scalar
+
+scalar:
+#  theme: deepSpace
+#  layout: modern
+#  documentDownloadType: both
+  url: /v3/api-docs
+  path: /docs
+  enabled: true
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#server:
+#  port: 8088
+#        include: scalar, health, info
