@@ -43,6 +43,25 @@ jobs:
 #      - name: Validate OpenAPI Document
 #        run: npx @scalar/cli document validate docs/openapi.json
 #
+      - name: Debug - Check if secret is set
+        run: |
+          echo "=== Checking secret availability ==="
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+
+          # Check if the secret is available (will show *** if exists)
+          echo "Direct secret access: ${{ secrets.SCALAR_API_KEY }}"
+
+          # List all available secret names (values will be masked)
+          echo "Secrets context: ${{ toJSON(secrets) }}"
+
+      - name: Debug - Check environment variable
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+        run: |
+          echo "Env var value: $SCALAR_API_KEY"
+          echo "Env var length: ${#SCALAR_API_KEY}"
       - name: Log in to Scalar Registry
         env:
           SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
