@@ -67,7 +67,7 @@ jobs:
         run: |
           # Save the generated file temporarily
           echo "Stashing generated OpenAPI spec..."
-          git stash
+          git stash -u
 
           # Switch to docs branch
           echo "Fetching and checking out docs branch..."
