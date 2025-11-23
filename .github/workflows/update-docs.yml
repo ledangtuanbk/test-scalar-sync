@@ -26,12 +26,22 @@ jobs:
         run: ./mvnw clean verify -DskipTests
         # 'verify' triggers the springdoc plugin execution configured in Phase 1
 
+        # check if the generated file exists
+      - name: Verify OpenAPI Spec Generation
+        run: |
+          if [ ! -f docs/openapi.json ]; then
+            echo "OpenAPI specification file not found!"
+            exit 1
+          else
+            echo "OpenAPI specification file generated successfully."
+          fi  
+
       # Step 3b: For Gradle (Uncomment if using Gradle)
       # - name: Build and Generate OpenAPI Spec (Gradle)
       #   run: ./gradlew clean generateOpenApiDocs
 
-      - name: Commit and Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update openapi.json [skip ci]"
-          file_pattern: docs/openapi.json
+#      - name: Commit and Push changes
+#        uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "chore: update openapi.json [skip ci]"
+#          file_pattern: docs/openapi.json
