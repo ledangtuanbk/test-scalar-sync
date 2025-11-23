@@ -39,7 +39,6 @@ jobs:
       - name: Validate OpenAPI Document
         run: npx @scalar/cli document validate docs/openapi.json
 
-
       - name: Push to Scalar Registry
         env:
           SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
@@ -51,7 +50,6 @@ jobs:
           npx @scalar/cli auth whoami || echo "Auth verification failed"
           
           echo "Publishing to registry..."
-#          npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
           npx @scalar/cli registry publish docs/openapi.json --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync
 
 
