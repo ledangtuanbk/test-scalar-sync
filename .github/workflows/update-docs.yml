@@ -65,10 +65,22 @@ jobs:
 
       - name: Pull latest changes from docs branch
         run: |
+          # Save the generated file temporarily
+          mkdir -p /tmp/docs-backup
+          cp docs/openapi.json /tmp/docs-backup/openapi.json || true
+
+          # Switch to docs branch
           git fetch origin docs:docs || true
           git checkout docs || git checkout -b docs
           git pull origin docs --rebase || true
-          git checkout master
+
+          # Restore the generated file
+          mkdir -p docs
+          cp /tmp/docs-backup/openapi.json docs/openapi.json
+
+          # Configure git for commit
+#          git config user.name "github-actions[bot]"
+#          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -77,6 +89,7 @@ jobs:
           file_pattern: docs/openapi.json
           branch: docs
           create_branch: true
+
 
 
 #      - name: Publish to Scalar
