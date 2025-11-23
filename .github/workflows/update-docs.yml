@@ -47,4 +47,4 @@ jobs:
 #          file_pattern: docs/openapi.json
 
       - name: Publish to Scalar
-        run: npx @scalar/cli project publish --token ${{ secrets.SCALAR_API_TOKEN }} --file docs/openapi.json
+        run: npx @scalar/cli project publish docs/openapi.json --api-key ${{ secrets.SCALAR_API_TOKEN }}
