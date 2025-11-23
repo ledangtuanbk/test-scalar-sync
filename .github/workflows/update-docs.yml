@@ -66,8 +66,7 @@ jobs:
       - name: Pull latest changes from docs branch
         run: |
           # Save the generated file temporarily
-          mkdir -p /tmp/docs-backup
-          cp docs/openapi.json /tmp/docs-backup/openapi.json || true
+          git stash
 
           # Switch to docs branch
           git fetch origin docs:docs || true
@@ -75,10 +74,12 @@ jobs:
           git pull origin docs --rebase || true
 
           # Restore the generated file
-          mkdir -p docs
-          cp /tmp/docs-backup/openapi.json docs/openapi.json
+          git stash pop
+#          mkdir -p docs
+#          cp /tmp/docs-backup/openapi.json docs/openapi.json
+#
+#          # Configure git for commit
 
-          # Configure git for commit
 #          git config user.name "github-actions[bot]"
 #          git config user.email "github-actions[bot]@users.noreply.github.com"
 
