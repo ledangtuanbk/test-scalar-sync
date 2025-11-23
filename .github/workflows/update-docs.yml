@@ -43,14 +43,29 @@ jobs:
         env:
           SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
         run: |
+          echo "=== Secret Debug Information ==="
+          echo "Secret name: SCALAR_API_KEY"
+
+          # Check if variable is set at all
+          if [ -z "${SCALAR_API_KEY+x}" ]; then
+            echo "❌ Variable is NOT SET (doesn't exist in environment)"
+          else
+            echo "✓ Variable EXISTS in environment"
+          fi
+
+          # Check if variable is empty
           if [ -z "$SCALAR_API_KEY" ]; then
-            echo "ERROR: SCALAR_API_KEY secret is NOT set or is empty"
-            echo " value ${SCALAR_API_KEY} "
+            echo "❌ Variable is EMPTY or NOT SET"
+            echo "Length: 0"
             exit 1
           else
-            echo "✓ SCALAR_API_KEY secret is set (length: ${#SCALAR_API_KEY})"
-            echo "✓ First 4 chars: ${SCALAR_API_KEY:0:4}****"
+            echo "✓ Variable has a VALUE"
+            echo "Length: ${#SCALAR_API_KEY} characters"
+            echo "First 4 chars: ${SCALAR_API_KEY:0:4}****"
           fi
+
+          echo "=== End Debug ==="
+      
 
       - name: Log in to Scalar Registry
         env:
