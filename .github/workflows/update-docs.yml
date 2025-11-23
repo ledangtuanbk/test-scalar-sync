@@ -40,16 +40,17 @@ jobs:
         run: npx @scalar/cli document validate docs/openapi.json
 
       - name: Debug - Check if secret is set
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
         run: |
-          if [ -z "${{ secrets.SCALAR_API_KEY }}" ]; then
+          if [ -z "$SCALAR_API_KEY" ]; then
             echo "ERROR: SCALAR_API_KEY secret is NOT set or is empty"
+            echo " value ${SCALAR_API_KEY} "
             exit 1
           else
             echo "✓ SCALAR_API_KEY secret is set (length: ${#SCALAR_API_KEY})"
             echo "✓ First 4 chars: ${SCALAR_API_KEY:0:4}****"
           fi
-        env:
-          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
 
       - name: Log in to Scalar Registry
         env:
