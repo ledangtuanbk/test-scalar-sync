@@ -40,7 +40,7 @@ jobs:
         run: npx @scalar/cli document validate docs/openapi.json
 
       - name: Log in to Scalar Registry
-        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
+        run: npx @scalar/cli auth login --token eyJhbGciOiJFZERTQSJ9.eyJ1aWQiOiJzcEZzT2U3V1Q5cDNuaDd1UTRoTnoiLCJ0ZWFtVWlkIjoiTnNIZzdZMmNLSDlsT3c1RXF1QnUtIiwidXNlckluZGV4IjoibGVkYW5ndHVhbmJrQGdtYWlsLmNvbSIsImlhdCI6MTc2Mzg2NjIxMCwiZXhwIjoxNzk1NDAyMjEwfQ._j6JXmD2UqCUUnjzubuxql-QrezmDHRbHrqC2SUlpLwLx9MTFRLB2NOMWrCJJLcgAijw769NqpANByQayav3Aw
 
       - name: Push to Scalar Registry
 #        run: npx @scalar/cli registry publish --namespace your-namespace --slug ledangtuanbk-test-scalar-sync docs/openapi.json
