@@ -66,14 +66,19 @@ jobs:
       - name: Pull latest changes from docs branch
         run: |
           # Save the generated file temporarily
+          echo "Stashing generated OpenAPI spec..."
           git stash
 
           # Switch to docs branch
+          echo "Fetching and checking out docs branch..."
           git fetch origin docs:docs || true
+          echo "Checking out docs branch..."
           git checkout docs || git checkout -b docs
+          echo "Pulling latest changes from docs branch..."
           git pull origin docs --rebase || true
 
           # Restore the generated file
+          echo "Restoring generated OpenAPI spec..."
           git stash pop
 #          mkdir -p docs
 #          cp /tmp/docs-backup/openapi.json docs/openapi.json
