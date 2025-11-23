@@ -63,13 +63,21 @@ jobs:
 
 #        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 
+      - name: Pull latest changes from docs branch
+        run: |
+          git fetch origin docs:docs || true
+          git checkout docs || git checkout -b docs
+          git pull origin docs --rebase || true
+          git checkout master
+
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update openapi.json [skip ci]"
           file_pattern: docs/openapi.json
           branch: docs
-          create_branch: 'true'
+          create_branch: true
+
 
 #      - name: Publish to Scalar
 #        run: |
