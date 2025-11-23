@@ -47,4 +47,9 @@ jobs:
 #          file_pattern: docs/openapi.json
 
       - name: Publish to Scalar
-        run: npx @scalar/cli project publish --token ${{ secrets.SCALAR_API_TOKEN }} --file docs/openapi.json
+        run: |
+          # 1. Authenticate with the CLI
+          npx -y @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
+          
+          # 2. Publish (Reads settings from scalar.config.json)
+          npx -y @scalar/cli project publish
