@@ -50,7 +50,7 @@ jobs:
           npx @scalar/cli auth whoami || echo "Auth verification failed"
           
           echo "Publishing to registry..."
-          npx @scalar/cli project publish --slug ledangtuanbk-test-scalar-sync
+          npx @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
 #          npx @scalar/cli registry publish docs/openapi.json --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync
 
 
