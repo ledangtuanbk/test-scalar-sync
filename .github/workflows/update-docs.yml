@@ -52,4 +52,4 @@ jobs:
           npx -y @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
           
           # 2. Publish (Reads settings from scalar.config.json)
-          npx -y @scalar/cli project publish
+          npx -y @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
