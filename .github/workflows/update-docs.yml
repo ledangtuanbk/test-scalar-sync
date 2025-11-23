@@ -21,57 +21,31 @@ jobs:
           java-version: '21' # Use your project's Java version
           distribution: 'temurin'
 
-#      - name: Use the secret
-#        run: |
-#          echo "My secret value is: ${{ secrets.SCALAR_API_TOKEN }}"
+      # Step 3a: For Maven
+      - name: Build and Generate OpenAPI Spec (Maven)
+        run: ./mvnw clean verify -DskipTests
+        # 'verify' triggers the springdoc plugin execution configured in Phase 1
 
-#      # Step 3a: For Maven
-#      - name: Build and Generate OpenAPI Spec (Maven)
-#        run: ./mvnw clean verify -DskipTests
-#        # 'verify' triggers the springdoc plugin execution configured in Phase 1
-#
-#        # check if the generated file exists
-#      - name: Verify OpenAPI Spec Generation
-#        run: |
-#          if [ ! -f docs/openapi.json ]; then
-#            echo "OpenAPI specification file not found!"
-#            exit 1
-#          else
-#            echo "OpenAPI specification file generated successfully."
-#          fi
-#
-#      - name: Validate OpenAPI Document
-#        run: npx @scalar/cli document validate docs/openapi.json
-#
-      - name: Debug - Check if secret is set
+        # check if the generated file exists
+      - name: Verify OpenAPI Spec Generation
         run: |
-          echo "=== Checking secret availability ==="
-          echo "Repository: ${{ github.repository }}"
-          echo "Branch: ${{ github.ref }}"
-          echo "Event: ${{ github.event_name }}"
+          if [ ! -f docs/openapi.json ]; then
+            echo "OpenAPI specification file not found!"
+            exit 1
+          else
+            echo "OpenAPI specification file generated successfully."
+          fi
 
-          # Check if the secret is available (will show *** if exists)
-          echo "Direct secret access: ${{ secrets.SCALAR_API_TOKEN }}"
+      - name: Validate OpenAPI Document
+        run: npx @scalar/cli document validate docs/openapi.json
 
-          # List all available secret names (values will be masked)
-          echo "Secrets context: ${{ toJSON(secrets) }}"
-
-      - name: Debug - Check environment variable
-        env:
-          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-        run: |
-          echo "Env var value: $SCALAR_API_TOKEN"
-          echo "Env var length: ${#SCALAR_API_TOKEN}"
-          echo "Env var length: ${{ secrets.SCALAR_API_TOKEN }}"
       - name: Log in to Scalar Registry
-        env:
-          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
         run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
 #
-#      - name: Push to Scalar Registry
-#        env:
-#          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-#        run: npx @scalar/cli registry publish --namespace @default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+      - name: Push to Scalar Registry
+        env:
+          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
+        run: npx @scalar/cli registry publish --namespace @default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 #        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 
 #      - name: Commit and Push changes
