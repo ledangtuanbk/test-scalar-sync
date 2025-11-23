@@ -39,10 +39,26 @@ jobs:
       - name: Validate OpenAPI Document
         run: npx @scalar/cli document validate docs/openapi.json
 
+      - name: Debug - Check if secret is set
+        run: |
+          if [ -z "${{ secrets.SCALAR_API_KEY }}" ]; then
+            echo "ERROR: SCALAR_API_KEY secret is NOT set or is empty"
+            exit 1
+          else
+            echo "✓ SCALAR_API_KEY secret is set (length: ${#SCALAR_API_KEY})"
+            echo "✓ First 4 chars: ${SCALAR_API_KEY:0:4}****"
+          fi
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+
       - name: Log in to Scalar Registry
-        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+        run: npx @scalar/cli auth login --token $SCALAR_API_KEY
 
       - name: Push to Scalar Registry
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
         run: npx @scalar/cli registry publish --namespace @default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 #        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 
