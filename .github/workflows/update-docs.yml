@@ -65,28 +65,22 @@ jobs:
 
       - name: Pull latest changes from docs branch
         run: |
-          # Save the generated file temporarily
-          echo "Stashing generated OpenAPI spec..."
-          git stash -u
+          # Save the generated file to a temporary location
+          echo "Backing up generated OpenAPI spec..."
+          mkdir -p /tmp/openapi-backup
+          mv docs/openapi.json /tmp/openapi-backup/openapi.json
 
           # Switch to docs branch
           echo "Fetching and checking out docs branch..."
-          git fetch origin docs:docs || true
-          echo "Checking out docs branch..."
-          git checkout docs || git checkout -b docs
-          echo "Pulling latest changes from docs branch..."
+          git fetch origin
+          git checkout docs || git checkout -b docs origin/docs || git checkout -b docs
           git pull origin docs --rebase || true
 
-          # Restore the generated file
+          # Restore the generated file from backup
           echo "Restoring generated OpenAPI spec..."
-          git stash pop
-#          mkdir -p docs
-#          cp /tmp/docs-backup/openapi.json docs/openapi.json
-#
-#          # Configure git for commit
-
-#          git config user.name "github-actions[bot]"
-#          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p docs
+          mv /tmp/openapi-backup/openapi.json docs/openapi.json
+      
 
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
