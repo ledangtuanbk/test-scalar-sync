@@ -21,9 +21,9 @@ jobs:
           java-version: '21' # Use your project's Java version
           distribution: 'temurin'
 
-      - name: Use the secret
-        run: |
-          echo "My secret value is: ${{ secrets.SCALAR_API_TOKEN }}"
+#      - name: Use the secret
+#        run: |
+#          echo "My secret value is: ${{ secrets.SCALAR_API_TOKEN }}"
 
 #      # Step 3a: For Maven
 #      - name: Build and Generate OpenAPI Spec (Maven)
@@ -43,9 +43,11 @@ jobs:
 #      - name: Validate OpenAPI Document
 #        run: npx @scalar/cli document validate docs/openapi.json
 #
-#      - name: Log in to Scalar Registry
-#        env:
-#          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+      - name: Log in to Scalar Registry
+        env:
+          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+        run: |
+          echo "My secret value is: $SCALAR_API_KEY"
 #        run: npx @scalar/cli auth login --token $SCALAR_API_KEY
 #
 #      - name: Push to Scalar Registry
