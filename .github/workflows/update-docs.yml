@@ -36,17 +36,23 @@ jobs:
             echo "OpenAPI specification file generated successfully."
           fi  
 
-      # Step 3b: For Gradle (Uncomment if using Gradle)
-      # - name: Build and Generate OpenAPI Spec (Gradle)
-      #   run: ./gradlew clean generateOpenApiDocs
+      - name: Validate OpenAPI Document
+        run: npx @scalar/cli document validate docs/openapi.json
 
-      - name: Commit and Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update openapi.json [skip ci]"
-          file_pattern: docs/openapi.json
-          branch: docs
-          create_branch: 'true'
+      - name: Log in to Scalar Registry
+        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
+
+      - name: Push to Scalar Registry
+#        run: npx @scalar/cli registry publish --namespace your-namespace --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+
+#      - name: Commit and Push changes
+#        uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "chore: update openapi.json [skip ci]"
+#          file_pattern: docs/openapi.json
+#          branch: docs
+#          create_branch: 'true'
 
 #      - name: Publish to Scalar
 #        run: |
