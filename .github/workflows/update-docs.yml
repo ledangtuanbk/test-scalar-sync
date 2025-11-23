@@ -62,12 +62,11 @@ jobs:
         run: |
           echo "Env var value: $SCALAR_API_TOKEN"
           echo "Env var length: ${#SCALAR_API_TOKEN}"
+          echo "Env var length: ${{ secrets.SCALAR_API_TOKEN }}"
       - name: Log in to Scalar Registry
         env:
           SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-        run: |
-          echo "My secret value is: $SCALAR_API_TOKEN"
-#        run: npx @scalar/cli auth login --token $SCALAR_API_TOKEN
+        run: npx @scalar/cli auth login --token $SCALAR_API_TOKEN
 #
 #      - name: Push to Scalar Registry
 #        env:
