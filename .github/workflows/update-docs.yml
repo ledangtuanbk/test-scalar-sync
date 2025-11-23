@@ -39,13 +39,13 @@ jobs:
       - name: Validate OpenAPI Document
         run: npx @scalar/cli document validate docs/openapi.json
 
-      - name: Log in to Scalar Registry
-        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
-#
       - name: Push to Scalar Registry
         env:
           SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-        run: npx @scalar/cli registry publish --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+        run: |
+          npx @scalar/cli auth login --token $SCALAR_API_TOKEN
+          npx @scalar/cli registry publish --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+
 #        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 
 #      - name: Commit and Push changes
