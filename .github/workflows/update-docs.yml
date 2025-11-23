@@ -21,61 +21,37 @@ jobs:
           java-version: '21' # Use your project's Java version
           distribution: 'temurin'
 
-      # Step 3a: For Maven
-      - name: Build and Generate OpenAPI Spec (Maven)
-        run: ./mvnw clean verify -DskipTests
-        # 'verify' triggers the springdoc plugin execution configured in Phase 1
-
-        # check if the generated file exists
-      - name: Verify OpenAPI Spec Generation
+      - name: Use the secret
         run: |
-          if [ ! -f docs/openapi.json ]; then
-            echo "OpenAPI specification file not found!"
-            exit 1
-          else
-            echo "OpenAPI specification file generated successfully."
-          fi  
+          echo "My secret value is: ${{ secrets.SCALAR_API_TOKEN }}"
 
-      - name: Validate OpenAPI Document
-        run: npx @scalar/cli document validate docs/openapi.json
-
-      - name: Debug - Check if secret is set
-        env:
-          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
-        run: |
-          echo "=== Secret Debug Information ==="
-          echo "Secret name: SCALAR_API_KEY"
-
-          # Check if variable is set at all
-          if [ -z "${SCALAR_API_KEY+x}" ]; then
-            echo "❌ Variable is NOT SET (doesn't exist in environment)"
-          else
-            echo "✓ Variable EXISTS in environment"
-          fi
-
-          # Check if variable is empty
-          if [ -z "$SCALAR_API_KEY" ]; then
-            echo "❌ Variable is EMPTY or NOT SET"
-            echo "Length: 0"
-            exit 1
-          else
-            echo "✓ Variable has a VALUE"
-            echo "Length: ${#SCALAR_API_KEY} characters"
-            echo "First 4 chars: ${SCALAR_API_KEY:0:4}****"
-          fi
-
-          echo "=== End Debug ==="
-      
-
-      - name: Log in to Scalar Registry
-        env:
-          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
-        run: npx @scalar/cli auth login --token $SCALAR_API_KEY
-
-      - name: Push to Scalar Registry
-        env:
-          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
-        run: npx @scalar/cli registry publish --namespace @default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
+#      # Step 3a: For Maven
+#      - name: Build and Generate OpenAPI Spec (Maven)
+#        run: ./mvnw clean verify -DskipTests
+#        # 'verify' triggers the springdoc plugin execution configured in Phase 1
+#
+#        # check if the generated file exists
+#      - name: Verify OpenAPI Spec Generation
+#        run: |
+#          if [ ! -f docs/openapi.json ]; then
+#            echo "OpenAPI specification file not found!"
+#            exit 1
+#          else
+#            echo "OpenAPI specification file generated successfully."
+#          fi
+#
+#      - name: Validate OpenAPI Document
+#        run: npx @scalar/cli document validate docs/openapi.json
+#
+#      - name: Log in to Scalar Registry
+#        env:
+#          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+#        run: npx @scalar/cli auth login --token $SCALAR_API_KEY
+#
+#      - name: Push to Scalar Registry
+#        env:
+#          SCALAR_API_KEY: ${{ secrets.SCALAR_API_KEY }}
+#        run: npx @scalar/cli registry publish --namespace @default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 #        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
 
 #      - name: Commit and Push changes
