@@ -29,7 +29,7 @@ public class TestController {
         return ResponseEntity.ok("Cache cleared for id: ");
     }
 
-    @GetMapping("/demo2")
+    @GetMapping("/demo3")
     public ResponseEntity<String> demo2() {
         return ResponseEntity.ok("Cache cleared for id: ");
     }
