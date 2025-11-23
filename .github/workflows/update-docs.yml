@@ -40,16 +40,18 @@ jobs:
       # - name: Build and Generate OpenAPI Spec (Gradle)
       #   run: ./gradlew clean generateOpenApiDocs
 
-#      - name: Commit and Push changes
-#        uses: stefanzweifel/git-auto-commit-action@v5
-#        with:
-#          commit_message: "chore: update openapi.json [skip ci]"
-#          file_pattern: docs/openapi.json
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update openapi.json [skip ci]"
+          file_pattern: docs/openapi.json
+          branch: docs
+          create_branch: 'true'
 
-      - name: Publish to Scalar
-        run: |
-          # 1. Authenticate with the CLI
-          npx -y @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
-          
-          # 2. Publish (Reads settings from scalar.config.json)
-          npx -y @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
+#      - name: Publish to Scalar
+#        run: |
+#          # 1. Authenticate with the CLI
+#          npx -y @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
+#
+#          # 2. Publish (Reads settings from scalar.config.json)
+#          npx -y @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
