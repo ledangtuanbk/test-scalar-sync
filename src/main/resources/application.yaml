@@ -1,6 +1,8 @@
 spring:
   application:
     name: SpringDemoTest
+  profiles:
+    active: dev
   data:
     redis:
       host: ${REDIS_HOST}
@@ -28,15 +30,16 @@ spring:
 springdoc:
   api-docs:
     path: /v3/api-docs
+    enabled: true
   packages-to-exclude: com.scalar
 
-scalar:
-#  theme: deepSpace
-#  layout: modern
-#  documentDownloadType: both
-  url: /v3/api-docs
-  path: /docs
-  enabled: true
+#scalar:
+##  theme: deepSpace
+##  layout: modern
+##  documentDownloadType: both
+#  url: /v3/api-docs
+#  path: /docs
+#  enabled: true
 
 #management:
 #  endpoints:
