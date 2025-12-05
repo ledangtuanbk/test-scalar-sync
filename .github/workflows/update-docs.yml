@@ -1,101 +1,21 @@
-name: Update API Docs
+name: Java CI with Maven
 
 on:
   push:
-    branches:
-      - master # Run only on master branch updates
+    branches: [ "testlib" ]
 
 jobs:
-  build-and-sync:
+  build:
+
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Permission to commit back to the repo
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # Use your project's Java version
+          java-version: '21'
           distribution: 'temurin'
-
-      # Step 3a: For Maven
-      - name: Build and Generate OpenAPI Spec (Maven)
-        run: ./mvnw clean verify -DskipTests
-        # 'verify' triggers the springdoc plugin execution configured in Phase 1
-
-        # check if the generated file exists
-      - name: Verify OpenAPI Spec Generation
-        run: |
-          if [ ! -f docs/openapi.json ]; then
-            echo "OpenAPI specification file not found!"
-            exit 1
-          else
-            echo "OpenAPI specification file generated successfully."
-          fi
-
-      - name: Validate OpenAPI Document
-        run: npx @scalar/cli document validate docs/openapi.json
-
-#      - name: Push to Scalar Registry
-#        env:
-#          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-#        run: |
-#          echo "Authenticating with Scalar..."
-#          npx @scalar/cli auth login --token $SCALAR_API_TOKEN
-#
-#          echo "Verifying authentication..."
-#          npx @scalar/cli auth whoami || echo "Auth verification failed"
-#
-#          echo "Publishing to registry..."
-#          npx @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
-#          npx @scalar/cli registry publish docs/openapi.json --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync
-
-
-#      - name: Push to Scalar Registry
-#        env:
-#          SCALAR_API_TOKEN: ${{ secrets.SCALAR_API_TOKEN }}
-#        run: |
-#          npx @scalar/cli auth login --token $SCALAR_API_TOKEN
-#          npx @scalar/cli registry publish --namespace default-team-lt6tm --slug ledangtuanbk-test-scalar-sync docs/openapi.json
-
-#        run: npx @scalar/cli registry publish --slug ledangtuanbk-test-scalar-sync docs/openapi.json
-
-      - name: Pull latest changes from docs branch
-        run: |
-          # Save the generated file to a temporary location
-          echo "Backing up generated OpenAPI spec..."
-          mkdir -p /tmp/openapi-backup
-          mv docs/openapi.json /tmp/openapi-backup/openapi.json
-
-          # Switch to docs branch
-          echo "Fetching and checking out docs branch..."
-          git fetch origin
-          git checkout docs || git checkout -b docs origin/docs || git checkout -b docs
-          git pull origin docs --rebase || true
-
-          # Restore the generated file from backup
-          echo "Restoring generated OpenAPI spec..."
-          mkdir -p docs
-          mv /tmp/openapi-backup/openapi.json docs/openapi.json
-      
-
-      - name: Commit and Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update openapi.json [skip ci]"
-          file_pattern: docs/openapi.json
-          branch: docs
-          create_branch: true
-
-
-
-#      - name: Publish to Scalar
-#        run: |
-#          # 1. Authenticate with the CLI
-#          npx -y @scalar/cli auth login --token ${{ secrets.SCALAR_API_TOKEN }}
-#
-#          # 2. Publish (Reads settings from scalar.config.json)
-#          npx -y @scalar/cli project publish --slug X8JYjA77V71bS50XcQgmP
+          cache: maven
+      - name: Build with Maven
+        run: mvn clean package

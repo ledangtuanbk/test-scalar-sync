@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
-@HiddenForProfiles({"dev"})
+@ShowForProfiles({"prod", "dev"})
 @Tag(name = "admin")
 public class AdminController {
-
 
     @GetMapping("/status")
     public ResponseEntity<String> getStatus() {

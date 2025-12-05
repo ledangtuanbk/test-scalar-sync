@@ -30,41 +30,69 @@ public class SpringdocConfig {
     public OpenApiCustomizer openApiCustomizer() {
         return openApi -> {
             String[] activeProfiles = env.getActiveProfiles();
-            Set<Class<?>> hiddenControllers = new HashSet<>();
+            Set<String> hiddenPaths = new HashSet<>();
+            Set<String> hiddenTags = new HashSet<>();
 
-            // Find all controllers that should be hidden for current profiles
+            // Find all controllers - hide those without annotation or not matching current profiles
             Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
-            for (HandlerMethod handlerMethod : handlerMethods.values()) {
+            for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+                HandlerMethod handlerMethod = entry.getValue();
                 Class<?> beanType = handlerMethod.getBeanType();
-                if (beanType.isAnnotationPresent(HiddenForProfiles.class)) {
-                    HiddenForProfiles annotation = beanType.getAnnotation(HiddenForProfiles.class);
+                boolean shouldHide = false;
+
+                // Check if controller has @ShowForProfiles annotation
+                if (beanType.isAnnotationPresent(ShowForProfiles.class)) {
+                    ShowForProfiles annotation = beanType.getAnnotation(ShowForProfiles.class);
+                    boolean shouldShow = false;
+
+                    // Check if any of the annotation's profiles match the active profiles
                     for (String profile : annotation.value()) {
                         if (Arrays.asList(activeProfiles).contains(profile)) {
-                            hiddenControllers.add(beanType);
+                            shouldShow = true;
                             break;
                         }
+                    }
+
+                    // If annotation is present but profile doesn't match, hide it
+                    if (!shouldShow) {
+                        shouldHide = true;
+                    }
+                } else {
+                    // No annotation -> hide by default
+                    shouldHide = true;
+                }
+
+                // Collect paths and tags to hide
+                if (shouldHide) {
+                    RequestMappingInfo mappingInfo = entry.getKey();
+                    if (mappingInfo.getPathPatternsCondition() != null) {
+                        mappingInfo.getPathPatternsCondition().getPatterns()
+                            .forEach(pattern -> hiddenPaths.add(pattern.getPatternString()));
+                    } else if (mappingInfo.getPatternsCondition() != null) {
+                        hiddenPaths.addAll(mappingInfo.getPatternsCondition().getPatterns());
+                    }
+
+                    // Collect tag names from @Tag annotation if present
+                    if (beanType.isAnnotationPresent(io.swagger.v3.oas.annotations.tags.Tag.class)) {
+                        io.swagger.v3.oas.annotations.tags.Tag tagAnnotation =
+                            beanType.getAnnotation(io.swagger.v3.oas.annotations.tags.Tag.class);
+                        hiddenTags.add(tagAnnotation.name());
                     }
                 }
             }
 
-            // Remove paths that belong to hidden controllers
-            if (!hiddenControllers.isEmpty()) {
-                openApi.getPaths().entrySet().removeIf(entry -> {
-                    return entry.getValue().readOperations().stream().anyMatch(operation -> {
-                        if (operation.getTags() != null) {
-                            for (String tag : operation.getTags()) {
-                                for (Class<?> hiddenController : hiddenControllers) {
-                                    String controllerName = hiddenController.getSimpleName().replace("Controller", "");
-                                    if (tag.equalsIgnoreCase(controllerName) || 
-                                        tag.equalsIgnoreCase(hiddenController.getSimpleName())) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                        return false;
-                    });
-                });
+            // Remove hidden paths from OpenAPI spec
+            if (!hiddenPaths.isEmpty()) {
+                openApi.getPaths().entrySet().removeIf(entry ->
+                    hiddenPaths.stream().anyMatch(hiddenPath ->
+                        entry.getKey().equals(hiddenPath) || entry.getKey().startsWith(hiddenPath)
+                    )
+                );
+            }
+
+            // Remove hidden tags from OpenAPI spec
+            if (!hiddenTags.isEmpty() && openApi.getTags() != null) {
+                openApi.getTags().removeIf(tag -> hiddenTags.contains(tag.getName()));
             }
         };
     }

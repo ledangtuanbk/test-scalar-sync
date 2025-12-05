@@ -1,0 +1,11 @@
+spring:
+  config:
+    import:
+        - optional:classpath:application-prod.yaml
+        - optional:classpath:application-test.yaml
+
+# do not delete the line below, it is used by the build script
+---
+#    optional:classpath:application-test.yaml
+demo:
+  value: "This is the development environment"
