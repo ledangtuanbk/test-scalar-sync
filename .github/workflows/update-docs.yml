@@ -19,3 +19,6 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn clean package
+        env:
+          # By default, setup-java maps the server-password to GITHUB_TOKEN env var
+          GITHUB_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}

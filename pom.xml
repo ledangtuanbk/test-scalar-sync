@@ -130,7 +130,7 @@
 
     <repositories>
         <repository>
-            <id>github</id>
+            <id>github-packages</id>
             <name>GitHub ledangtuanbk Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/ledangtuanbk/mylib</url>
         </repository>
