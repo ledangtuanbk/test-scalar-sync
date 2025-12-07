@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2024 Your Company Name
+ * All rights reserved.
+ */
 package com.demo.springdemotest;
 
+import com.demo.springdemotest.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,29 +13,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping( "/test")
+@RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
-    private final TestService testService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<String> test(@PathVariable String id){
-        String test = testService.test(id);
-        return ResponseEntity.ok(test);
-    }
+	private final TestService testService;
 
-    @GetMapping("/clear/{id}")
-    public ResponseEntity<String> clearCache(@PathVariable String id) {
-        return ResponseEntity.ok("Cache cleared for id: " + id);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<String> test(@PathVariable String id) {
+		String test = testService.test(id);
+		return ResponseEntity.ok(test);
+	}
 
-    @GetMapping("/demo")
-    public ResponseEntity<String> demo() {
-        return ResponseEntity.ok("Cache cleared for id: ");
-    }
+	@GetMapping("/clear/{id}")
+	public ResponseEntity<String> clearCache(@PathVariable String id) {
+		return ResponseEntity.ok("Cache cleared for id: " + id);
+	}
 
-    @GetMapping("/demo3")
-    public ResponseEntity<String> demo2() {
-        return ResponseEntity.ok("Cache cleared for id: ");
-    }
+	@GetMapping("/demo")
+	public ResponseEntity<String> demo() {
+		return ResponseEntity.ok("Cache cleared for id: ");
+	}
+
+	@GetMapping("/demo3")
+	public ResponseEntity<String> demo2() {
+		return ResponseEntity.ok("Cache cleared for id: ");
+	}
+
+	public void test() {
+		System.out.println("test");
+	}
+
 }
