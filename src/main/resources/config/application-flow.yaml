@@ -1,0 +1,26 @@
+stage-types:
+  system-initiated:
+    - "RunBackgroundCheck"
+    - "ApprovalDecision"
+  user-action:
+    - "VerifyEmail"
+stage-transitions:
+  - from: "Created"
+    transitions:
+      - to: "VerifyEmail"
+        when-state: "Complete"
+
+  - from: "VerifyEmail"
+    transitions:
+      - to: "RunBackgroundCheck"
+        when-state: "Complete"
+  - from: "RunBackgroundCheck"
+    transitions:
+      - to: "ApprovalDecision"
+        when-state: "Complete"
+  - from: "ApprovalDecision"
+    transitions:
+      - to: "Completed"
+        when-outcome: "Approved"
+      - to: "Declined"
+        when-outcome: "Denied"

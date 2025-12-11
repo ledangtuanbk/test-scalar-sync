@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping( "/test")
 @RequiredArgsConstructor
+@Profile("dev")
 public class TestController {
     private final TestService testService;
 
