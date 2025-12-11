@@ -15,6 +15,19 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 0
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    connection-timeout: 2000ms
+    requested-heartbeat: 30
+    listener:
+      simple:
+        concurrency: 3
+        max-concurrency: 10
+        prefetch: 1
 #  data:
 #    redis:
 #      host: localhost
@@ -47,3 +60,4 @@ scalar:
 #server:
 #  port: 8088
 #        include: scalar, health, info
+
